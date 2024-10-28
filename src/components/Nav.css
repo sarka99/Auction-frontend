@@ -1,78 +1,104 @@
 /* src/components/Nav.css */
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #282c34;
-  color: white;
+  background-color: #e9e9e941;
+  color: rgb(0, 0, 0);
   position: fixed;
   top: 0;
   width: 100%;
+  box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #000000, #000000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
 }
 
 .navLinks {
-  flex-grow: 1;
   display: flex;
   justify-content: center;
+  flex-grow: 1;
+  gap: 20px;
 }
 
 .link {
-    color: white; /* Initial color */
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: color 0.15s ease, background-color 0.15s ease; /* Smooth transition */
-    margin: 0 15px;
-    font-size: 18px;
-    position: relative; /* For positioning the pseudo-element */
-    overflow: hidden; /* To keep the shadow inside */
-  }
+  color: #333333; /* Ensure initial link color */
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 16px;
+  position: relative;
+  transition: background-color 0.3s ease; /* Remove color transition */
+}
 
+/* Underline effect */
+.link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #000000, #444444);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+/* Only underline appears on hover */
 .link:hover {
-    color: rgba(255, 255, 255, 0.63); /* Change text color on hover */
-  }
+  color: #333333; /* Keep the text color constant */
+}
+
+.link:hover::after {
+  transform: scaleX(1); /* Only the underline effect */
+}
 
 .userInfo {
   display: flex;
   align-items: center;
+  gap: 15px;
 }
 
 .userDetails {
-  margin-right: 15px;
   text-align: right;
 }
 
 .username {
   display: block;
-  font-weight: bold;  
-
+  font-weight: bold;
 }
 
 .email {
   display: block;
   font-style: italic;
+  font-size: 14px;
+  color: #666666;
 }
 
 .button {
-  display: flex; /* Use flex to align icon and text */
-  align-items: center; /* Center items vertically */
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  padding: 10px 18px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: #616c81;
-  color: rgb(255, 255, 255);
-  margin-left: 50px;
-  margin-right: 50px;
-  transition: background-color 0.2s;
+  margin-left: 15px;
+  margin-right: 35px;
+  background-color: #333333;
+  color: #ffffff;
+  font-weight: 500;
+  transition: background-color 0.3s;
 }
 
 .button:hover {
-  background-color: #616c8181; /* A darker shade for hover */
+  background-color: #000000;
 }

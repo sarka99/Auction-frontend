@@ -6,11 +6,10 @@ function AdminPanel() {
     //Using the useAuth custom hook to access values in the Authcontent so that we can get keycloak related state
     const {isLoggedIn, keycloak}  = useAuth();
     const [showCreateUser,setShowCreateUser] = useState(false);
-    const [userProfile,setUserProfile] = useState({});
     useEffect(()=>{
-        setUserProfile(keycloak.loadUserProfile());
-    },[userProfile])
-
+      console.log(`Is user logged in inside adminpanel? ${isLoggedIn}`)
+    })
+  
     const handleLogoutUser = () =>{
         keycloak.logout();
         
@@ -29,13 +28,11 @@ function AdminPanel() {
           <p>Last Name: {keycloak.tokenParsed?.family_name}</p>
           <p>Your ID is: {keycloak.tokenParsed?.sub}</p>
           <p>Your token is: {keycloak.token}</p>
-          {console.log(`is user logged in inside adminpanel ${isLoggedIn}`)}
         </div>
         <button onClick={handleLogoutUser}>Logout</button>      
         <button onClick={handleToggleCreateUser}>Add user</button>
-        {showCreateUser ? <CreateUser/> :null}
+        {showCreateUser ? <CreateUser/> : null}
 
-        {console.log(userProfile)}
       </div>
 
       

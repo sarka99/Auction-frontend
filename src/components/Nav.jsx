@@ -2,9 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Nav.css'; // Ensure you have your styles imported
-
-// Make sure to import Font Awesome CSS in your index.js or App.js
+import './Nav.css'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserShield, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Nav = () => {
   const { isLoggedIn, keycloak } = useAuth();
@@ -19,9 +19,12 @@ const Nav = () => {
 
   return (
     <nav className="navbar">
-      <h1 className="title">Auctioneer</h1>
+      <h1 className="title">Auction</h1>
       <div className="navLinks">
-        <Link to="/admin" className="link">Admin Panel</Link>
+        <Link to="/admin" className="link">
+          <FontAwesomeIcon icon={faUserShield} style={{ marginRight: '8px' }} />
+          Admin Panel
+        </Link>
       </div>
       <div className="userInfo">
         {isLoggedIn ? (
@@ -31,18 +34,19 @@ const Nav = () => {
               <span className="email">{keycloak.tokenParsed?.email}</span>
             </div>
             <button onClick={handleLogout} className="button">
-              Logout
+              <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '0px' }} />
+              
             </button>
           </>
         ) : (
-          <button onClick={handleLogin} className="button">Login</button>
+          <button onClick={handleLogin} className="button">
+            <FontAwesomeIcon icon={faSignInAlt} style={{ marginRight: '8px' }} />
+            Login
+          </button>
         )}
       </div>
     </nav>
   );
 };
-
-// Add the icon style here for uniform spacing
-
 
 export default Nav;
