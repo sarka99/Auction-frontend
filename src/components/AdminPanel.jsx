@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Nav from "./Nav"
 import CreateUser from "./CreateUser";
@@ -6,9 +6,14 @@ function AdminPanel() {
     //Using the useAuth custom hook to access values in the Authcontent so that we can get keycloak related state
     const {isLoggedIn, keycloak}  = useAuth();
     const [showCreateUser,setShowCreateUser] = useState(false);
+    const [userProfile,setUserProfile] = useState({});
+    useEffect(()=>{
+        setUserProfile(keycloak.loadUserProfile());
+    },[userProfile])
 
     const handleLogoutUser = () =>{
         keycloak.logout();
+        
     }
     const handleToggleCreateUser = () =>{
         setShowCreateUser(prev => !prev);
@@ -28,8 +33,9 @@ function AdminPanel() {
         </div>
         <button onClick={handleLogoutUser}>Logout</button>      
         <button onClick={handleToggleCreateUser}>Add user</button>
-
         {showCreateUser ? <CreateUser/> :null}
+
+        {console.log(userProfile)}
       </div>
 
       
