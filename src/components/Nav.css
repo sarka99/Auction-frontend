@@ -1,0 +1,78 @@
+/* src/components/Nav.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #282c34;
+  color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.navLinks {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.link {
+    color: white; /* Initial color */
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: color 0.15s ease, background-color 0.15s ease; /* Smooth transition */
+    margin: 0 15px;
+    font-size: 18px;
+    position: relative; /* For positioning the pseudo-element */
+    overflow: hidden; /* To keep the shadow inside */
+  }
+
+.link:hover {
+    color: rgba(255, 255, 255, 0.63); /* Change text color on hover */
+  }
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.userDetails {
+  margin-right: 15px;
+  text-align: right;
+}
+
+.username {
+  display: block;
+  font-weight: bold;  
+
+}
+
+.email {
+  display: block;
+  font-style: italic;
+}
+
+.button {
+  display: flex; /* Use flex to align icon and text */
+  align-items: center; /* Center items vertically */
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #616c81;
+  color: rgb(255, 255, 255);
+  margin-left: 50px;
+  margin-right: 50px;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #616c8181; /* A darker shade for hover */
+}

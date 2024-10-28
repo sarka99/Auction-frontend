@@ -1,58 +1,48 @@
-import React from "react";
-import { useKeycloak } from "@react-keycloak/web";
+// src/components/Nav.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import './Nav.css'; // Ensure you have your styles imported
+
+// Make sure to import Font Awesome CSS in your index.js or App.js
 
 const Nav = () => {
-  const { keycloak } = useKeycloak();
+  const { isLoggedIn, keycloak } = useAuth();
+
+  const handleLogin = () => {
+    keycloak.login();
+  };
+
+  const handleLogout = () => {
+    keycloak.logout();
+  };
 
   return (
-    <div>
-      <nav>
-        <h1>Keycloak React AUTH.</h1>
-        <ul>
-          <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/secured">Secured Page</a>
-          </li>
-        </ul>
-        <div>
-          {!keycloak.authenticated && (
-            <button
-              type="button"
-              className="text-blue-800"
-              onClick={() => keycloak.login()}
-            >
-              Login
+    <nav className="navbar">
+      <h1 className="title">Auctioneer</h1>
+      <div className="navLinks">
+        <Link to="/admin" className="link">Admin Panel</Link>
+      </div>
+      <div className="userInfo">
+        {isLoggedIn ? (
+          <>
+            <div className="userDetails">
+              <span className="username">{keycloak.tokenParsed?.preferred_username}</span>
+              <span className="email">{keycloak.tokenParsed?.email}</span>
+            </div>
+            <button onClick={handleLogout} className="button">
+              Logout
             </button>
-          )}
-
-          {!!keycloak.authenticated && (
-            <button
-              type="button"
-              className="text-blue-800"
-              onClick={() => keycloak.logout()}
-              >
-              Logout ({keycloak.tokenParsed.preferred_username})
-            </button>              
-
-          )}
-          <button onClick={()=>console.log(keycloak)}>Log keycloak object</button>
-
-          
-        <div>
-          <h2>Welcome, {keycloak.tokenParsed?.preferred_username}</h2>
-          <p>Email: {keycloak.tokenParsed?.email}</p>
-          <p>First Name: {keycloak.tokenParsed?.given_name}</p>
-          <p>Last Name: {keycloak.tokenParsed?.family_name}</p>
-          <p>Your ID is: {keycloak.tokenParsed?.sub}</p>
-          <p>Your token is: {keycloak.token}</p>
-        </div>
-
-        </div>
-      </nav>
-    </div>
+          </>
+        ) : (
+          <button onClick={handleLogin} className="button">Login</button>
+        )}
+      </div>
+    </nav>
   );
 };
+
+// Add the icon style here for uniform spacing
+
 
 export default Nav;

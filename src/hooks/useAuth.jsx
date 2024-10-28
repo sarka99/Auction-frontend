@@ -1,27 +1,40 @@
-import React,{createContext, useEffect, useState} from "react";
+import React, { createContext, useContext, useEffect, useState, useRef} from "react";
 import Keycloak from "keycloak-js";
-const useAuth = () =>{
-    //state below is to keep track of users logged in status
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [keycloak,setKeycloak] = useState(true);    
-    useEffect(()=>{
-        // creating a keycloak instance so we later can mandate login screen
-        const keycloakInstance = new Keycloak({
-            url: import.meta.env.VITE_KEYCLOAK_URL, // The Keycloak server URL
-            realm: import.meta.env.VITE_KEYCLOAK_REALM, // The Keycloak realm
-            clientId: import.meta.env.VITE_KEYCLOAK_CLIENT, // The Keycloak client ID
-        });
-        keycloakInstance.init({ onLoad: "login-required"}).then((res)=> {
-            setIsLoggedIn(true);
-            setKeycloak(keycloakInstance);
-        });
+import keycloak from "../keycloak";
+// Create context for Auth
+const AuthContext = createContext();
 
-
-
-    },[])
+export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true); 
+  const isRun = useRef(false);
   
-   
-    return {isLoggedIn, keycloak}
-    
-}
+
+  useEffect(() => {
+    if(isRun.current){
+        return;
+    }
+
+
+    isRun.current = true;
+    keycloak.init({ onLoad: "login-required" }).then((authenticated) => {
+      setIsLoggedIn(true);
+      setLoading(false);
+    }).catch((error) => {
+      console.error("Keycloak initialization failed:", error);
+      setLoading(false);
+    });
+  }, []);
+
+  return (
+    <>
+    {/* here we are defining what data will be abvailable to the child components that use this context (happens in wrappedapp.jsx)*/}
+    <AuthContext.Provider  value={{ isLoggedIn, keycloak, loading}}>
+      {children}
+    </AuthContext.Provider>   
+     </>
+
+  );
+};
 export default useAuth;
