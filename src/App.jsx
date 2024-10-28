@@ -1,37 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
-import keycloak from "./keycloak";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Nav from "./components/Nav";
-import HomePage from "./pages/Homepage";
-import SecuredPage from "./pages/Securedpage";
-import PrivateRoute from "./helpers/PrivateRoute";
-import KeycloakControls from "./components/KeycloakControls";
+import AdminPanel from "./components/AdminPanel";
+import Public from "./components/public";
+import useAuth from "./hooks/useAuth";
 function App() {
+  //this is the entry point component
+  //const {keycloak} = useKeycloak();
+  const {isLoggedIn,keycloak} = useAuth();
+
+  
+
+  
+  
   return (
-    <div>
-      <ReactKeycloakProvider authClient={keycloak}>
-        <React.StrictMode>
-          <Nav />
-          <KeycloakControls/>
+    <>    
 
-          <BrowserRouter>
-            <Routes>
-              <Route exact path="/" element={<HomePage />} />
-              <Route
-                path="/secured"
-                element={
-                  <PrivateRoute>
-                    <SecuredPage />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
 
-          </BrowserRouter>
-        </React.StrictMode>
-      </ReactKeycloakProvider>
-    </div>
+    {/*Conditionally render components based on if the user is logged in or not */}
+    {console.log(`is the user logged in now ${isLoggedIn}`)}
+    {isLoggedIn ? <AdminPanel keycloak= {keycloak}/> : <Public/>}    
+    
+
+    </>
   );
 }
 
