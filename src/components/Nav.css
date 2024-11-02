@@ -14,13 +14,22 @@
   z-index: 1000;
 }
 
-.title {
+.home-link {
   font-size: 28px;
   font-weight: bold;
+  text-decoration: none;
+  color: #000000; /* Ensures initial color */
+  text-transform: uppercase;
   background: linear-gradient(90deg, #000000, #000000);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
+  margin-right: auto;
+  padding-right: 20px;
+  transition: color 0.3s ease;
+}
+
+.home-link:hover {
+  color: #555555; /* Subtle hover color change */
 }
 
 .navLinks {
@@ -65,7 +74,7 @@
 .userInfo {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px; /* Reduced gap between user settings and logout buttons */
 }
 
 .userDetails {
@@ -87,18 +96,89 @@
 .button {
   display: flex;
   align-items: center;
-  padding: 10px 18px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-left: 15px;
-  margin-right: 35px;
+  margin-right: 10px; /* Adjusted for better spacing */
   background-color: #333333;
   color: #ffffff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Adding transitions for shadow and scale */
   font-weight: 500;
-  transition: background-color 0.3s;
 }
 
 .button:hover {
   background-color: #000000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Reset shadow */
+  transform: translateY(-2px); /* Lift effect on hover */
+
+}
+
+.user-settings-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px; /* Slightly reduced padding */
+  border: none;
+  border-radius: 8px;
+  background-color: #333333;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: 500;
+  margin-left: 15px;
+  margin-right: 35px; /* Adjusted for better spacing */
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Adding transitions for shadow and scale */
+  font-size: 18px; /* Slightly larger font size */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.user-settings-button:hover {
+  transform: translateY(-2px); /* Lift effect on hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+  background-color: #000000;
+}
+
+.user-settings-button:active {
+  transform: translateY(0); /* Reset on active */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Reset shadow */
+}
+
+.user-settings-button i {
+  margin-right: 5px; /* Adjust space between icon and button edge */
+  font-size: 18px; /* Icon size */
+}
+.button,
+.user-settings-button {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.25); /* Smooth transparent look */
+  border: 1px solid rgba(53, 53, 53, 0.25);
+  color: #000000;
+  font-weight: 500;
+  font-size: 18px;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.button:hover,
+.user-settings-button:hover {
+  background-color: rgba(0, 0, 0, 0); /* Darker background on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+  border: 1px solid rgba(102, 102, 102, 0.904);
+
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.button:active,
+.user-settings-button:active {
+  transform: translateY(0); /* Reset lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button i,
+.user-settings-button i {
+  margin-right: 8px;
+  font-size: 18px;
 }
