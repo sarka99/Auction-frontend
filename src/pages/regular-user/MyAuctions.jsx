@@ -112,7 +112,7 @@ function MyAuctions() {
         {auctions.map((auction) => (
           <div
             key={auction.id}
-            className="bg-white rounded-xl shadow-lg p-5 flex items-center space-x-4 w-full hover:bg-gray-50"
+            className="bg-white rounded-xl shadow-lg p-5 flex items-center space-x-4 w-full  hover:bg-gray-50 transition transform duration-200  hover:shadow-2xl"
           >
             <img
               src={auction.imageUrl} // Adjust based on your DTO

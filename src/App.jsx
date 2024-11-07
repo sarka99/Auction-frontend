@@ -9,6 +9,7 @@ import Auctions from "./pages/regular-user/Auctions";
 import MyAuctions from "./pages/regular-user/MyAuctions";
 import AttendedAuctions from "./pages/regular-user/AttendedAuctions";
 import WonAuctions from "./pages/regular-user/WonAuctions";
+import AuctionDetails from "./pages/regular-user/AuctionDetails";
 function App() {
   const { isLoggedIn, loading,keycloak,isAdmin } = useAuth();
 
@@ -26,6 +27,8 @@ function App() {
             <Route path="/my-auctions" element={<MyAuctions />} />
             <Route path="/attended-auctions" element={<AttendedAuctions />} />
             <Route path="/won-auctions" element={<WonAuctions />} />
+            <Route path="/auction-details/:auctionId" element={<AuctionDetails />} />
+
             {/* Add more routes as needed */}
 
             {isAdmin && (

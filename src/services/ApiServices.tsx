@@ -48,6 +48,22 @@ const ApiService = {
         }
         return response.json();
     },
+
+    getAuctionDetails : async (auctionId,userToken) =>{
+        const response = await fetch(`${API_BASE_URL}/auctions/${auctionId}`,{
+            method : 'GET',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
+                'Content-Type': 'application/json',
+            }
+
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to fetch auction details");
+        }
+        return response.json();
+    }
 };
 
 export default ApiService;
