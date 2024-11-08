@@ -159,7 +159,7 @@ const placeBid = async () => {
               <CardTitle className="text-3xl font-bold">
                 {auction?.name}
               </CardTitle>
-              <CardDescription className="text-gray-600">
+              <CardDescription className="text-gray-600 mt-3 text-base">
                 {auction?.description}
               </CardDescription>
             </div>

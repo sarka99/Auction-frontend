@@ -56,10 +56,10 @@ function Auctions() {
         {auctions.map((auction) => (
           <div
             key={auction.id}
-            className="flex-shrink-0 bg-white rounded-xl shadow-lg p-8 w-80 h-96 flex flex-col justify-between transition transform duration-200 hover:scale-105 hover:shadow-2xl"
+            className="flex-shrink-0 bg-white rounded-xl shadow-lg p-8 w-80 h-80 flex flex-col justify-between transition transform duration-200 hover:scale-105 hover:shadow-2xl"
             >
             {/* Adjust card size */}
-            <div>
+            <div >
               <h2 className="text-xl font-semibold text-gray-900">{auction.name}</h2>
               <p className="text-gray-700 mt-2 line-clamp-3">{auction.description}</p>
               <div className="text-gray-500 mt-2">
