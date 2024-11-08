@@ -44,7 +44,7 @@ function AuctionDetails() {
       }
     };
     fetchAuctionDetails();
-  }, [auctionId,auctionBids.length]);
+  }, [auctionId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -62,59 +62,70 @@ function AuctionDetails() {
   const handleOnBidChanged = (e) =>{
     setBidValue(e.target.value);
   }
-  const handleOnPlaceBid = () => {
+  const handleOnPlaceBid = async () => {
     console.log(`Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`);
-  
+
     const highestBid = returnHighestBid();
     const loggedInUserId = keycloak.tokenParsed?.sub;
-  
+
     // Get current time and auction's end time
     const currentTime = new Date();
     const auctionEndTime = new Date(auction?.endDateTime);
-  
-    // Check if the auction has expired
     const hasAuctionExpired = currentTime > auctionEndTime;
-  
+
     // Check if the logged-in user is the auction owner
     if (auction.userId === loggedInUserId) {
-      alert("Owner cannot place bid");
-      return;
+        alert("Owner cannot place bid");
+        return;
     }
-  
+
     // Check if the bid value is valid
     if (bidValue <= highestBid) {
-      alert("Your bid must be higher than the current highest bid.");
-      return;
+        alert("Your bid must be higher than the current highest bid.");
+        return;
     }
-  
-    if (bidValue <= auction.startingPrice) {
-      alert("Your bid must be higher than the starting price.");
-      return;
-    }
-  
-    if (hasAuctionExpired) {
-      alert("The auction has expired.");
-      return;
-    }
-  
-    // Place the bid if all checks pass
-    const newBid = placeBid();
-    setAuctionBids((prevBids) => [...prevBids, newBid]);
-    setBidValue("");
-  };
-  const placeBid = async () => {
-    try{
-        setLoading(true);
-        //making the place bid API request
-        await ApiService.placeBidOnAuction(auctionId,keycloak.token,bidValue);
 
-    }catch(error){
-        setError(error);
-        console.log(`This error occured when placing bid ${error}`);
-    }finally{
-        setLoading(false);
+    if (bidValue <= auction.startingPrice) {
+        alert("Your bid must be higher than the starting price.");
+        return;
     }
-  }
+
+    if (hasAuctionExpired) {
+        alert("The auction has expired.");
+        return;
+    }
+
+    // Place the bid if all checks pass
+    try {
+        const newBid = await placeBid();  // Wait for the bid to be placed
+        console.log("New Bid placed:", newBid);  // Log the response from placeBid
+
+        // If the bid was successfully placed, update the bids state
+        setAuctionBids((prevBids) => [...prevBids, newBid]);
+        setBidValue("");  // Reset the bid input
+    } catch (error) {
+        console.log("Error during bid placement:", error);  // Log any errors
+    }
+};
+const placeBid = async () => {
+    try {
+        setLoading(true);  // Start loading
+
+        // Make the place bid API request and wait for the response
+        const newBid = await ApiService.placeBidOnAuction(auctionId, keycloak.token, bidValue);
+
+        console.log("API Response (New Bid):", newBid);  // Log the response to check the data
+
+        return newBid;  // Return the new bid so it can be used to update the state
+
+    } catch (error) {
+        setError(error);  // Set error if there is an issue
+        console.log(`This error occurred when placing bid: ${error}`);
+        return null;  // In case of error, return null so no updates happen
+    } finally {
+        setLoading(false);  // Stop loading
+    }
+};
   
   const fetchAuctionDetails = async () => {
     try {

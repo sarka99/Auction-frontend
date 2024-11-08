@@ -64,19 +64,30 @@ const ApiService = {
         }
         return response.json();
     },
-    placeBidOnAuction : async (auctionId,userToken, bidAmount) => {
-        const response = await fetch(`${API_BASE_URL}/auctions/${auctionId}/bids`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
-                'Content-Type': 'application/json', // Ensure JSON is being sent
-            },
-            body: JSON.stringify({ amount: bidAmount }) // Send the bid amount as JSON in the body
-        });
-        if(!response.ok){
-            throw new Error("Failed to place bid on auction");
+    placeBidOnAuction: async (auctionId, userToken, bidAmount) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auctions/${auctionId}/bids`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: bidAmount })
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to place bid on auction");
+            }
+    
+            const data = await response.json();
+            
+            console.log("API Response (New Bid):", data);  // Log the response
+            return data;  // Ensure you're returning the response correctly
+    
+        } catch (error) {
+            console.error("Error placing bid:", error);  // Log any errors in placing the bid
+            throw error;
         }
-        return response.json;
     }
 };
 
