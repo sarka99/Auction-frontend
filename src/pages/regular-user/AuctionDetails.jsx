@@ -62,22 +62,46 @@ function AuctionDetails() {
   const handleOnBidChanged = (e) =>{
     setBidValue(e.target.value);
   }
-  const handleOnPlaceBid = () =>{
-    console.log(`Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`)
+  const handleOnPlaceBid = () => {
+    console.log(`Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`);
+  
     const highestBid = returnHighestBid();
-    //here we want to make sure bid value is valid before even making an API request to place bid
-    if(bidValue > highestBid){
-        //allowed to place the bid
-        // once the bid is placed we need to also update the auctionBids 
-        const newBid = placeBid();
-        setAuctionBids((prevBids) => [...prevBids, newBid])
-        setBidValue("");
-    }else{
-        //TODO: Replace the alert with something like a toast message
-        alert("Your bid must be higher than the current highest bid.");
-        return;
+    const loggedInUserId = keycloak.tokenParsed?.sub;
+  
+    // Get current time and auction's end time
+    const currentTime = new Date();
+    const auctionEndTime = new Date(auction?.endDateTime);
+  
+    // Check if the auction has expired
+    const hasAuctionExpired = currentTime > auctionEndTime;
+  
+    // Check if the logged-in user is the auction owner
+    if (auction.userId === loggedInUserId) {
+      alert("Owner cannot place bid");
+      return;
     }
-  }
+  
+    // Check if the bid value is valid
+    if (bidValue <= highestBid) {
+      alert("Your bid must be higher than the current highest bid.");
+      return;
+    }
+  
+    if (bidValue <= auction.startingPrice) {
+      alert("Your bid must be higher than the starting price.");
+      return;
+    }
+  
+    if (hasAuctionExpired) {
+      alert("The auction has expired.");
+      return;
+    }
+  
+    // Place the bid if all checks pass
+    const newBid = placeBid();
+    setAuctionBids((prevBids) => [...prevBids, newBid]);
+    setBidValue("");
+  };
   const placeBid = async () => {
     try{
         setLoading(true);
@@ -213,7 +237,7 @@ function AuctionDetails() {
         {/* bid placing section */}
         <div className="flex justify-end mr-3 py-11 space-x-4">
           <Input
-            className="bg-gray-50 font-semibold px-4 py-3 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 "
+            className="bg-gray-50 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 "
             style={{ borderRadius: "8px" }}
             placeholder="Enter your bid amount"
             type="number"
@@ -222,7 +246,7 @@ function AuctionDetails() {
             onChange = {(event) => handleOnBidChanged(event)}
           />
           <Button 
-          className="bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-gray-900 transition-all duration-300 ease-in-out active:scale-95"
+          className="bg-gray-800 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-gray-900 transition-all duration-300 ease-in-out active:scale-95"
           onClick = {handleOnPlaceBid}
           >
             Place Bid
