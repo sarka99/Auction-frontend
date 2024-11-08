@@ -63,6 +63,20 @@ const ApiService = {
             throw new Error("Failed to fetch auction details");
         }
         return response.json();
+    },
+    placeBidOnAuction : async (auctionId,userToken, bidAmount) => {
+        const response = await fetch(`${API_BASE_URL}/auctions/${auctionId}/bids`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
+                'Content-Type': 'application/json', // Ensure JSON is being sent
+            },
+            body: JSON.stringify({ amount: bidAmount }) // Send the bid amount as JSON in the body
+        });
+        if(!response.ok){
+            throw new Error("Failed to place bid on auction");
+        }
+        return response.json;
     }
 };
 
