@@ -165,7 +165,7 @@ function AuctionDetails() {
         </CardContent>
       </Card>
 
-      {/* Bids Table */}
+      {/* this is Bids Table  */}
       <div className="mb-8">
         <h3 className="text-2xl font-semibold mb-4">Bids</h3>
         <Table className="w-full table-auto border-collapse border border-gray-300 rounded-lg shadow-md">
