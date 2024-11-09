@@ -88,6 +88,20 @@ const ApiService = {
             console.error("Error placing bid:", error);  // Log any errors in placing the bid
             throw error;
         }
+    },
+    getAllActiveBiddenAuctions : async (userToken) => {
+        const response = await fetch(`${API_BASE_URL}/auctions/bids/active`,{
+            method : 'GET',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to fetch all active auctions");
+        }
+        return response.json();
     }
 };
 
