@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import ApiService from "../../services/ApiServices";
 import AuctionCard from "../../components/AuctionInfoCard";
 
-function AllAuctions() {
+function AttendedAuctions() {
   const { keycloak } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,4 +44,4 @@ function AllAuctions() {
   );
 }
 
-export default AllAuctions;
+export default AttendedAuctions;
