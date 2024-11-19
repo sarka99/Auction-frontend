@@ -102,7 +102,50 @@ const ApiService = {
             throw new Error("Failed to fetch all active auctions");
         }
         return response.json();
-    }
+    },
+    getAllEndedWonAuctions : async (userToken) =>{
+        const response = await fetch(`${API_BASE_URL}/auctions/endedWon`,{
+            method : 'GET',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
+                'Content-Type': 'application/json',
+            }
+        });
+        if(!response.ok){
+            throw new Error("Failed to fetch all ended won auctions");
+        }
+        return response.json();
+    },
+    deleteAuctionById : async (userToken, auctionId) =>{
+        const response = await fetch(`${API_BASE_URL}/auctions/delete/${auctionId}`, {
+            method : 'DELETE',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Add token in Authorization header
+                'Content-Type': 'application/json',
+            }
+        });
+        if(!response.ok){
+            throw new Error("Failed to remove the auction");
+
+        }
+        return response.json();
+    },
+    createAuction: async (auctionDetails, userToken) => {
+        const response = await fetch(`${API_BASE_URL}/auctions/create`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(auctionDetails), // Send auction details to the backend
+        });
+    
+        if (!response.ok) {
+            throw new Error("Failed to create auction");
+        }
+    
+        return response.json(); // Return the created auction data
+    },
 };
 
 export default ApiService;

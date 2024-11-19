@@ -35,7 +35,9 @@ function AttendedAuctions() {
       <div className="flex space-x-7 overflow-x-auto p-10 scrollbar-hide justify-start mx-6 w-5/5">
         {auctions.length === 0 && !loading && !error && (
           <div>No active auctions available at the moment.</div>
-        )}
+        )}          
+        
+        {/* displaying the actual auctioncard with brief info about each auction*/}
         {auctions.map((auction) => (
           <AuctionCard key={auction.id} auction={auction} />
         ))}

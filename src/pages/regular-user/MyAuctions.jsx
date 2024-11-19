@@ -16,15 +16,20 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-//TODO: finish up My Auctions page fully, rn not finished
+import { useNavigate } from 'react-router-dom';
+
 function MyAuctions() {
   const { keycloak } = useAuth();
   const [auctions, setAuctions] = useState([]); // Initialize auctions as an empty array
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Control dialog visibility
+  const [isDeleteDiaglogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [auctionToDeleteId, setAuctionToDeleteId] = useState(null);  // ID of the auction to delete
   const [editingAuctionId, setEditingAuctionId] = useState(null); // ID of the auction being edited
   const [newDescription, setNewDescription] = useState(""); // New description
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
@@ -54,7 +59,10 @@ function MyAuctions() {
   }, [keycloak]);
 
   const handleView = (auctionId) => {
+    //navigate/redirect user to the auctiondetails page.    
     console.log(`Handling view for auctionId ${auctionId}`);
+    navigate(`/auction-details/${auctionId}`);
+
   };
   const handleEdit = (auctionId) => {
     const auctionToEdit = auctions.find((auction) => auction.id === auctionId);
@@ -63,10 +71,40 @@ function MyAuctions() {
     setIsDialogOpen(true); // Open the dialog
     //get the new comment, then make a post request to editAuctionDescription
   };
-  const handleDelete = (id) => console.log("Deleting auction", id);
+  const handleDelete = (auctionId) => {
+    //here we delete the auction based on its id
+    console.log(`Deleting auction with id: ${auctionId}`)
+    setAuctionToDeleteId(auctionId); // Store the ID of the auction being deleted
+    setIsDeleteDialogOpen(true); // Open the delete confirmation dialog
 
-  const handleOnCreateAuction = () => {
+    
+  }
+
+  const handleConfirmDelete  = async () =>{
+    try{
+      setLoading(true);
+      console.log(`about to remove auction with auctionId ${auctionToDeleteId}`)
+      if(!keycloak.token || auctionToDeleteId==null){
+        throw new Error("Token or auction to delete id invalid");
+      }
+      await ApiService.deleteAuctionById(keycloak.token,auctionToDeleteId);
+
+      //remove auction from the list by filtering it handleOnCreateAuction, doing this to update the list of auctions to reflect the removal
+      setAuctions((prevAuctions) => prevAuctions.filter((auction) => auction.id !== auctionToDeleteId));
+
+      //once removed close dialog and reset auctionToDeleteId
+      setIsDeleteDialogOpen(false);
+      setAuctionToDeleteId(null);
+    }catch(err){
+      setError("Failed to delete auction");
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  const handleCreateAuction = () => {
     console.log("Creating auction");
+    navigate(`/create-auction`);
   };
   const handleDescriptionChange = (e) => {
     setNewDescription(e.target.value);
@@ -93,6 +131,11 @@ function MyAuctions() {
       setError("Failed to update description");
     }
   };
+
+  const handleCancelDelete  = () =>{
+    setIsDeleteDialogOpen(false);
+    setEditingAuctionId(false);
+  }
   if (loading) return <div>Loading auctions...</div>;
   if (error) return <div>Error fetching auctions: {error}</div>;
 
@@ -102,7 +145,7 @@ function MyAuctions() {
         <h1 className="text-3xl font-bold text-gray-800">My Auctions</h1>
         <Button
           className="bg-black text-white rounded-xl px-4 py-2 hover:bg-gray-800 transition duration-200"
-          onClick={handleOnCreateAuction}
+          onClick={handleCreateAuction}
         >
           Create Auction
         </Button>
@@ -114,11 +157,7 @@ function MyAuctions() {
             key={auction.id}
             className="bg-white rounded-xl shadow-lg p-5 flex items-center space-x-4 w-full  hover:bg-gray-50 transition transform duration-200  hover:shadow-2xl"
           >
-            <img
-              src={auction.imageUrl} // Adjust based on your DTO
-              alt="Auction"
-              className="w-16 h-16 rounded-lg object-cover"
-            />
+          
             <div className="flex-grow">
               <h2 className="font-bold text-gray-800 text-lg">
                 {auction.name}
@@ -188,6 +227,33 @@ function MyAuctions() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+
+      {/* Delete auction dialog */}
+      <Dialog open={isDeleteDiaglogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] lg:max-w-[800px] h-[20vh] min-h-[200px]">
+      <DialogHeader>
+      <DialogTitle>Delete Auction</DialogTitle>
+      <DialogDescription>
+        Are you sure you want to delete this auction? This action cannot be undone.
+      </DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <Button
+        className="bg-red-600 text-white rounded-xl px-4 py-2 hover:bg-red-700"
+        onClick={handleConfirmDelete} // Handle deletion on confirm
+      >
+        Confirm
+      </Button>
+      <Button
+        className="bg-neutral-800 text-white rounded-xl px-4 py-2 hover:bg-gray-700"
+        onClick={handleCancelDelete} // Handle cancellation
+      >
+        Cancel
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import ApiService from "../../services/ApiServices";
-
+//TODO: make it so that the owner of the auction cannot see the bid placement section
 function AuctionDetails() {
   const { keycloak } = useAuth();
   const { auctionId } = useParams();
