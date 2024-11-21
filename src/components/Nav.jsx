@@ -81,16 +81,14 @@ const Nav = () => {
     return (
       <>
         <nav className="navbar">
-          <Link to="/admin" className="home-link">
+          <Link to="/admin-dashboard" className="home-link">
             Auction
           </Link>
           <div className="navLinks">
-            <Link to="/admin-panel" className="link">
-              Admin Panel
+            <Link to="/admin-dashboard" className="link">
+            Dashboard
             </Link>
-            <Link to="/public" className="link">
-              Public
-            </Link>
+       
           </div>
           <div className="userInfo">
             {isLoggedIn ? (

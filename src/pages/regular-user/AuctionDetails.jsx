@@ -21,8 +21,8 @@ function AuctionDetails() {
   const [auctionBids, setAuctionBids] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [bidValue,setBidValue] = useState("");
-  
+  const [bidValue, setBidValue] = useState("");
+
   useEffect(() => {
     const fetchAuctionDetails = async () => {
       try {
@@ -33,7 +33,7 @@ function AuctionDetails() {
             auctionId,
             loggedInUserToken
           );
-          console.log(data)
+          console.log(data);
           setAuction(data);
           setAuctionBids(data.bids);
         }
@@ -53,15 +53,18 @@ function AuctionDetails() {
   if (error) {
     return <div>{error}</div>;
   }
-  const returnHighestBid = () =>{
-    if(auctionBids.length === 0){
-        return 0;
+
+  const returnHighestBid = () => {
+    if (auctionBids.length === 0) {
+      return 0;
     }
     return Math.max(...auctionBids.map((bid) => bid.amount));
-  }
-  const handleOnBidChanged = (e) =>{
+  };
+
+  const handleOnBidChanged = (e) => {
     setBidValue(e.target.value);
-  }
+  };
+
   const handleOnPlaceBid = async () => {
     console.log(`Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`);
 
@@ -75,90 +78,66 @@ function AuctionDetails() {
 
     // Check if the logged-in user is the auction owner
     if (auction.userId === loggedInUserId) {
-        alert("Owner cannot place bid");
-        return;
+      alert("Owner cannot place bid");
+      return;
     }
 
     // Check if the bid value is valid
     if (bidValue <= highestBid) {
-        alert("Your bid must be higher than the current highest bid.");
-        return;
+      alert("Your bid must be higher than the current highest bid.");
+      return;
     }
 
     if (bidValue <= auction.startingPrice) {
-        alert("Your bid must be higher than the starting price.");
-        return;
+      alert("Your bid must be higher than the starting price.");
+      return;
     }
 
     if (hasAuctionExpired) {
-        alert("The auction has expired.");
-        return;
+      alert("The auction has expired.");
+      return;
     }
 
     // Place the bid if all checks pass
     try {
-        const newBid = await placeBid();  // Wait for the bid to be placed
-        console.log("New Bid placed:", newBid);  // Log the response from placeBid
+      const newBid = await placeBid(); // Wait for the bid to be placed
+      console.log("New Bid placed:", newBid); // Log the response from placeBid
 
-        // If the bid was successfully placed, update the bids state
-        setAuctionBids((prevBids) => [...prevBids, newBid]);
-        setBidValue("");  // Reset the bid input
+      // If the bid was successfully placed, update the bids state
+      setAuctionBids((prevBids) => [...prevBids, newBid]);
+      setBidValue(""); // Reset the bid input
     } catch (error) {
-        console.log("Error during bid placement:", error);  // Log any errors
-    }
-};
-const placeBid = async () => {
-    try {
-        setLoading(true);  // Start loading
-
-        // Make the place bid API request and wait for the response
-        const newBid = await ApiService.placeBidOnAuction(auctionId, keycloak.token, bidValue);
-
-        console.log("API Response (New Bid):", newBid);  // Log the response to check the data
-
-        return newBid;  // Return the new bid so it can be used to update the state
-
-    } catch (error) {
-        setError(error);  // Set error if there is an issue
-        console.log(`This error occurred when placing bid: ${error}`);
-        return null;  // In case of error, return null so no updates happen
-    } finally {
-        setLoading(false);  // Stop loading
-    }
-};
-  
-  const fetchAuctionDetails = async () => {
-    try {
-      setLoading(true);
-      const loggedInUserToken = keycloak.token;
-      if (loggedInUserToken && keycloak) {
-        const data = await ApiService.getAuctionDetails(
-          auctionId,
-          loggedInUserToken
-        );
-        console.log(data)
-        setAuction(data);
-        setAuctionBids(data.bids);
-      }
-    } catch (err) {
-      setError("Failed to fetch auction details. Please try again.");
-    } finally {
-      setLoading(false);
+      console.log("Error during bid placement:", error); // Log any errors
     }
   };
 
+  const placeBid = async () => {
+    try {
+      setLoading(true); // Start loading
 
+      // Make the place bid API request and wait for the response
+      const newBid = await ApiService.placeBidOnAuction(auctionId, keycloak.token, bidValue);
+
+      console.log("API Response (New Bid):", newBid); // Log the response to check the data
+
+      return newBid; // Return the new bid so it can be used to update the state
+    } catch (error) {
+      setError(error); // Set error if there is an issue
+      console.log(`This error occurred when placing bid: ${error}`);
+      return null; // In case of error, return null so no updates happen
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
 
   return (
     <div className="container mx-auto p-6">
       {/* Auction Header */}
-      <Card className="mb-8 mt-8 shadow-lg border rounded-xl border-gray-300 bg-transparent">
+      <Card className="mb-8 mt-8 shadow-lg border rounded-xl border-gray-300 bg-gray-150">
         <CardHeader className="mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="text-3xl font-bold">
-                {auction?.name}
-              </CardTitle>
+              <CardTitle className="text-3xl font-bold text-gray-800">{auction?.name}</CardTitle>
               <CardDescription className="text-gray-600 mt-3 text-base">
                 {auction?.description}
               </CardDescription>
@@ -168,8 +147,7 @@ const placeBid = async () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="inline-flex space-x-48">
-
+        <CardContent className="inline-flex space-x-12 text-gray-800">
           {/* Starting Price */}
           <div className="space-y-2 text-left">
             <h3 className="text-xl font-medium">Starting Price</h3>
@@ -185,80 +163,65 @@ const placeBid = async () => {
           {/* Highest Bid */}
           <div className="space-y-2 text-left">
             <h3 className="text-xl font-medium">Highest Bid</h3>
-            <p className="text-lg font-bold">
-                {returnHighestBid()}
-            </p>
+            <p className="text-lg font-bold">${returnHighestBid()}</p>
           </div>
 
-          {/* End time*/}
+          {/* End time */}
           <div className="space-y-2 text-left">
             <h3 className="text-xl font-medium">Ends At</h3>
-            <p className="text-lg font-bold">
-              {new Date(auction?.endDateTime).toLocaleString()}
-            </p>
+            <p className="text-lg font-bold">{new Date(auction?.endDateTime).toLocaleString()}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* this is Bids Table  */}
+      {/* Bids Table */}
       <div className="mb-8">
-        <h3 className="text-2xl font-semibold mb-4">Bids</h3>
+        <h3 className="text-2xl font-semibold mb-4 text-gray-800">Bids</h3>
         <Table className="w-full table-auto border-collapse border border-gray-300 rounded-lg shadow-md">
-          <thead className="bg-gray-200">
+          <thead className="bg-gray-100">
             <tr>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700 ">
-                Bidder
-              </th>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">
-                Amount
-              </th>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">
-                Time
-              </th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Bidder</th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Amount</th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Time</th>
             </tr>
           </thead>
           <tbody>
             {auctionBids.length > 0 ? (
               auctionBids.map((bid) => (
-                <tr
-                  key={bid.id}
-                  className="border-t hover:bg-gray-50 transition-all duration-200 ease-in-out"
-                >
-                  <td className="border px-6 py-4 text-sm">
-                    {bid.bidderEmail}
-                  </td>
+                <tr key={bid.id} className="border-t hover:bg-gray-50 transition-all duration-200 ease-in-out">
+                  <td className="border px-6 py-4 text-sm">{bid.bidderEmail}</td>
                   <td className="border px-6 py-4 text-sm">${bid.amount}</td>
-                  <td className="border px-6 py-4 text-sm">
-                    {new Date(bid.time).toLocaleString()}
-                  </td>
+                  <td className="border px-6 py-4 text-sm">{new Date(bid.time).toLocaleString()}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="3"
-                  className="text-center border px-6 py-4 text-sm"
-                >
+                <td colSpan="3" className="text-center border px-6 py-4 text-sm">
                   No bids placed yet.
                 </td>
               </tr>
             )}
           </tbody>
         </Table>
-        {/* bid placing section */}
+
+        {/* Bid Placement Section */}
         <div className="flex justify-end mr-3 py-11 space-x-4">
           <Input
-            className="bg-gray-50 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 "
-            style={{ borderRadius: "8px" }}
+            className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
             placeholder="Enter your bid amount"
             type="number"
             min="1"
-            value = {bidValue}
-            onChange = {(event) => handleOnBidChanged(event)}
+            value={bidValue}
+            onChange={(event) => handleOnBidChanged(event)}
+            style={{
+              borderRadius: "8px",
+              WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
+              MozAppearance: "textfield", // Hide spinners in Firefox
+            }}
           />
-          <Button 
-          className="bg-gray-800 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-gray-900 transition-all duration-300 ease-in-out active:scale-95"
-          onClick = {handleOnPlaceBid}
+          <Button
+            className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
+            onClick={handleOnPlaceBid}
           >
             Place Bid
           </Button>

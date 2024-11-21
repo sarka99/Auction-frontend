@@ -1,7 +1,6 @@
 // src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import AdminPanel from "./components/AdminPanel";
 import Public from "./components/Public"; // Include your Public component if you have one
 import useAuth from "./hooks/useAuth";
 import Nav from "./components/Nav";
@@ -11,6 +10,7 @@ import AttendedAuctions from "./pages/regular-user/AttendedAuctions";
 import WonAuctions from "./pages/regular-user/WonAuctions";
 import AuctionDetails from "./pages/regular-user/AuctionDetails";
 import CreateAuction from "./components/CreateAuction";
+import Dashboard from "./pages/admin/Dashboard";
 function App() {
   const { isLoggedIn, loading,keycloak,isAdmin } = useAuth();
 
@@ -35,7 +35,7 @@ function App() {
 
             {isAdmin && (
               <>
-                <Route path="/admin-panel" element={<AdminPanel />} />
+                <Route path="/admin-dashboard" element={<Dashboard />} />
 
               </>
             ) }

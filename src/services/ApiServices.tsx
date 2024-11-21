@@ -146,6 +146,21 @@ const ApiService = {
     
         return response.json(); // Return the created auction data
     },
+    listAllUsers : async (userToken) => {
+        const response = await fetch(`${API_BASE_URL}/admin/users`, {
+            method : 'GET',
+            headers:{
+                'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to fetch all the users");
+
+        }
+        return response.json();
+    },
 };
 
 export default ApiService;

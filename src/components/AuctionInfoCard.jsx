@@ -23,7 +23,7 @@ const AuctionCard = ({ auction }) => {
         </div>
       </div>
       <Button
-        className="mt-6 bg-black rounded-xl text-white w-full hover:bg-gray-800 active:scale-95 focus:ring-2 focus:ring-gray-800 focus:ring-opacity-50 transition transform duration-150"
+        className="bg-blue-600 text-white px-6 py-3 mt-6 rounded-xl shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out active:scale-95"
         onClick={handleOnViewAuctionClicked}
       >
         View Auction

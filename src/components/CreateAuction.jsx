@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // For navigation
 import ApiService from '../services/ApiServices';
-import {useAuth} from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 function CreateAuction() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { keycloak } = useAuth();
   const [auctionDetails, setAuctionDetails] = useState({
     name: '',
@@ -18,20 +18,20 @@ function CreateAuction() {
   // Handle input changes for form fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setAuctionDetails({ ...auctionDetails, [name]: value });    
-    console.log(`keycloak token: ${keycloak.token}`)
-
+    setAuctionDetails({ ...auctionDetails, [name]: value });
+    console.log(`keycloak token: ${keycloak.token}`);
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
     try {
       setLoading(true);
-      setError(null); 
+      setError(null);
 
       // Send the auction details to the backend to create the auction
       const newAuction = await ApiService.createAuction(auctionDetails, keycloak.token);
-      
+
       // If the auction was successfully created, navigate to "My Auctions" page
       if (newAuction) {
         navigate('/my-auctions');
@@ -45,15 +45,14 @@ function CreateAuction() {
     }
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full  bg-white p-8 rounded-xl shadow-lg py-9 px-9 ">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full bg-gray-50 p-8 rounded-xl shadow-lg">
         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-6">Create a New Auction</h2>
-        
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>} 
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
               Auction Name
@@ -62,11 +61,11 @@ function CreateAuction() {
               type="text"
               name="name"
               id="name"
-              placeholder='Enter Auction Name'
+              placeholder="Enter Auction Name"
               value={auctionDetails.name}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950"
+              className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -81,7 +80,7 @@ function CreateAuction() {
               onChange={handleInputChange}
               required
               rows="4"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950 resize-y max-h-44"
+              className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y"
               placeholder="Provide a brief description of your auction"
             />
           </div>
@@ -93,13 +92,18 @@ function CreateAuction() {
             <input
               type="number"
               name="startingPrice"
-              placeholder='Ex: 500$'
+              placeholder="Ex: 500$"
               id="startingPrice"
               value={auctionDetails.startingPrice}
               onChange={handleInputChange}
               required
               min="0"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950"
+               style={{
+              borderRadius: "8px",
+              WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
+              MozAppearance: "textfield", // Hide spinners in Firefox
+            }}
+              className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -114,22 +118,22 @@ function CreateAuction() {
               value={auctionDetails.endDateTime}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950"
+              
+              className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
-          <div className="flex justify-center ">
+          <div className="flex justify-center mt-6">
             <button
               type="submit"
               disabled={loading}
-              className={`w-full px-6 py-3 mt-6 text-white font-semibold rounded-xl shadow-md ${
-                loading ? 'bg-gray-400' : 'bg-neutral-800 hover:bg-gray-900 focus:ring-2 focus:ring-blue-950'
+              className={`w-full px-6 py-3 text-white font-semibold rounded-xl shadow-md ${
+                loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
               } focus:outline-none`}
             >
               {loading ? 'Creating Auction...' : 'Create Auction'}
             </button>
           </div>
-        
         </form>
       </div>
     </div>

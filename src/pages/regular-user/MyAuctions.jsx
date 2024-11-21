@@ -144,8 +144,8 @@ function MyAuctions() {
       <div className="w-full flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">My Auctions</h1>
         <Button
-          className="bg-black text-white rounded-xl px-4 py-2 hover:bg-gray-800 transition duration-200"
-          onClick={handleCreateAuction}
+           className="bg-blue-600 text-white px-6 py-3 mt-6 rounded-xl shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out active:scale-95"
+           onClick={handleCreateAuction}
         >
           Create Auction
         </Button>
