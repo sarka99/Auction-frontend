@@ -26,6 +26,8 @@ function App() {
           <Routes>
             <Route path="/auctions" element={<Auctions />} />
             <Route path="/my-auctions" element={<MyAuctions />} />
+            <Route path="/my-auctions/:userId" element={<MyAuctions />} />
+
             <Route path="/attended-auctions" element={<AttendedAuctions />} />
             <Route path="/won-auctions" element={<WonAuctions />} />
             <Route path="/auction-details/:auctionId" element={<AuctionDetails />} />
