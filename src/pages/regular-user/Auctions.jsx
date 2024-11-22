@@ -15,6 +15,7 @@ function Auctions() {
 
   useEffect(() => {
     const fetchAllActiveAuctions = async () => {
+      console.log(`Token of user: ${keycloak.token}`)
       try {
         setLoading(true);
         if (keycloak) {

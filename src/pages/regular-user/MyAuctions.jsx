@@ -149,7 +149,7 @@ function MyAuctions() {
   if (error) return <div>Error fetching auctions: {error}</div>;
 
   return (
-    <div className="min-h-screen w-full my-1 bg-gray-100 p-10 flex flex-col items-center">
+    <div className="min-h-screen w-full my-1 bg-gray-100 p-10 flex flex-col items-center ">
       <div className="w-full flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">My Auctions</h1>
         <Button

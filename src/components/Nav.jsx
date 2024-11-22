@@ -9,6 +9,7 @@ import {
   faSignInAlt,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import ThemeToggle from "./ThemeToggle"; // Import the ThemeToggle component
 
 const Nav = () => {
   const { isLoggedIn, keycloak, isAdmin } = useAuth();
@@ -72,6 +73,8 @@ const Nav = () => {
                 Login
               </button>
             )}
+            <ThemeToggle /> {/* Include the theme toggle */}
+
           </div>
         </nav>
       </>
@@ -115,6 +118,8 @@ const Nav = () => {
                 Login
               </button>
             )}
+            <ThemeToggle /> {/* Include the theme toggle */}
+
           </div>
         </nav>
       </>

@@ -1,7 +1,6 @@
 // src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Public from "./components/Public"; // Include your Public component if you have one
 import useAuth from "./hooks/useAuth";
 import Nav from "./components/Nav";
 import Auctions from "./pages/regular-user/Auctions";
