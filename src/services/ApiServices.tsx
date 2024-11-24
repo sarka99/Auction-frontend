@@ -161,6 +161,21 @@ const ApiService = {
         }
         return response.json();
     },
+    updateUserName : async (userId, newUserName, userToken) => {
+        const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/update-username`, {
+            method : 'PUT',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
+                'Content-Type': 'application/json',
+            },
+            //send the body object to the backend, an object containing only the new user name
+            body: JSON.stringify({newUserName}) 
+        });
+        if(!response.ok){
+            throw new Error("Failed to update username");
+        }
+        return response.json();
+    }
 };
 
 export default ApiService;

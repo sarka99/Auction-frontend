@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../services/ApiServices";
 import useAuth from "../hooks/useAuth";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa"; // Importing the icons
-import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
-
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+import EditUserNameDialog from "./EditUserNameDialog";
 function UsersList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const { keycloak } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
+    console.log(`Token of admin: ${keycloak.token}`)
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        console.log(
-          `The token of the person trying to fetch all users is: ${keycloak.token}`
-        );
         const users = await ApiService.listAllUsers(keycloak.token);
         setUsers(users);
-        console.log(`Users fetched : ${users}`);
       } catch (err) {
         setError("Failed to fetch users");
       } finally {
@@ -29,13 +29,41 @@ function UsersList() {
     fetchUsers();
   }, []);
 
+  useEffect(()=>{
+    console.log("updated users list: ", users)
+  },[users])
+
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveUsername = async (newUsername) => {
+    console.log(`Trying to save new username of ${newUsername}`)
+    
+    try {
+      await ApiService.updateUserName(selectedUser.id, newUsername, keycloak.token);
+      // Refresh user list after update
+      setUsers(users.map(u => u.id === selectedUser.id ? { ...u, username: newUsername } : u));
+    } catch (error) {
+      setError("Failed to update username");      
+      console.log("Error when saving is: " , error)
+
+    }
+      
+  };
 
   const handleViewAuctions = (userId) =>{
     navigate(`/my-auctions/${userId}`);  // Navigate to the MyAuctions page with the userId
 
   }
+  const handleDelete = (userId) =>{
+    console.log(`Deleting user with userId ${userId}`)
+  }
+
   if (loading) return <div>Loading users...</div>;
   if (error) return <div>{error}</div>;
+
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-3xl font-semibold mb-6">Users List</h2>
@@ -44,27 +72,13 @@ function UsersList() {
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-200">
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Username
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                First Name
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Last Name
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Active
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Roles
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Username</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">First Name</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Last Name</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Email</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Active</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Roles</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -74,9 +88,7 @@ function UsersList() {
                 <td className="px-6 py-4">{user.firstName}</td>
                 <td className="px-6 py-4">{user.lastName}</td>
                 <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4">
-                  {user.active ? "Active" : "Inactive"}
-                </td>
+                <td className="px-6 py-4">{user.active ? "Active" : "Inactive"}</td>
                 <td className="px-6 py-4">
                   <ul>
                     {user.roles.map((role, index) => (
@@ -86,29 +98,30 @@ function UsersList() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex space-x-6">
-                    {/* Edit Button */}
+                    {/* Edit user Button */}
                     <button
-                      onClick={() => handleEdit(user.id)}
-                      className="text-gray-600  hover:text-gray-900 hover:scale-125 focus:outline-none transition duration-200"
+                      onClick={() => handleEdit(user)}
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <FaEdit size={20} />
                     </button>
 
-                    {/* Delete Button */}
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-gray-600  hover:text-gray-900 hover:scale-125 focus:outline-none transition duration-200"
-                    >
-                      <FaTrashAlt size={20} />
-                    </button>
-
-                    {/* View Auctions Button */}
+                      {/* View users auctions Button */}
                     <button
                       onClick={() => handleViewAuctions(user.id)}
                       className="text-gray-600  hover:text-gray-900 hover:scale-125 focus:outline-none transition duration-200"
                     >
                       <FaEye size={20} />
                     </button>
+
+                      {/* Delete Button */}
+                      <button
+                      onClick={() => handleDelete(user.id)}
+                      className="text-gray-600  hover:text-gray-900 hover:scale-125 focus:outline-none transition duration-200"
+                    >
+                      <FaTrashAlt size={20} />
+                    </button>
+
                   </div>
                 </td>
               </tr>
@@ -116,7 +129,17 @@ function UsersList() {
           </tbody>
         </table>
       </div>
+
+      {selectedUser && (
+        <EditUserNameDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          user={selectedUser}
+          onSave={handleSaveUsername}
+        />
+      )}
     </div>
   );
 }
+
 export default UsersList;
