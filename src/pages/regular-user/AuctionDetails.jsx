@@ -129,6 +129,36 @@ function AuctionDetails() {
       setLoading(false); // Stop loading
     }
   };
+  const renderPlaceBidSection = () => {
+    const loggedInUserId = keycloak.tokenParsed?.sub;
+    if(auction.userId !== loggedInUserId){
+      return (
+        <div className="flex justify-end mr-3 py-11 space-x-4">
+        <Input
+          className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
+          placeholder="Enter your bid amount"
+          type="number"
+          min="1"
+          value={bidValue}
+          onChange={(event) => handleOnBidChanged(event)}
+          style={{
+            borderRadius: "8px",
+            WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
+            MozAppearance: "textfield", // Hide spinners in Firefox
+          }}
+        />
+        <Button
+          className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
+          onClick={handleOnPlaceBid}
+        >
+          Place Bid
+        </Button>
+      </div>
+      )
+    }else{
+        return null;
+    }
+  }
 
   return (
     <div className="container mx-auto p-6">
@@ -203,29 +233,34 @@ function AuctionDetails() {
             )}
           </tbody>
         </Table>
+        
 
         {/* Bid Placement Section */}
+        {auction && auction.userId !== keycloak.tokenParsed?.sub && (
         <div className="flex justify-end mr-3 py-11 space-x-4">
-          <Input
-            className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
-            placeholder="Enter your bid amount"
-            type="number"
-            min="1"
-            value={bidValue}
-            onChange={(event) => handleOnBidChanged(event)}
-            style={{
-              borderRadius: "8px",
-              WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
-              MozAppearance: "textfield", // Hide spinners in Firefox
-            }}
-          />
-          <Button
-            className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
-            onClick={handleOnPlaceBid}
-          >
-            Place Bid
-          </Button>
-        </div>
+        <Input
+          className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
+          placeholder="Enter your bid amount"
+          type="number"
+          min="1"
+          value={bidValue}
+          onChange={(event) => handleOnBidChanged(event)}
+          style={{
+            borderRadius: "8px",
+            WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
+            MozAppearance: "textfield", // Hide spinners in Firefox
+          }}
+        />
+        <Button
+          className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
+          onClick={handleOnPlaceBid}
+        >
+          Place Bid
+        </Button>
+      </div>
+      )}
+
+        
       </div>
     </div>
   );

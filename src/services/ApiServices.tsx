@@ -178,7 +178,7 @@ const ApiService = {
     },
     deleteUserByUserId : async (userId, userToken) => {
         const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/delete-user`,{
-            method : 'PUT',
+            method : 'DELETE',
             headers : {
                 'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
                 'Content-Type': 'application/json',
