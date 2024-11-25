@@ -175,6 +175,20 @@ const ApiService = {
             throw new Error("Failed to update username");
         }
         return response.json();
+    },
+    deleteUserByUserId : async (userId, userToken) => {
+        const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/delete-user`,{
+            method : 'PUT',
+            headers : {
+                'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
+                'Content-Type': 'application/json',
+            }
+
+        });
+        if(!response.ok){
+            throw new Error("Failed to remove user");
+        }
+        return response.json();
     }
 };
 

@@ -4,12 +4,26 @@ import useAuth from "../hooks/useAuth";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import EditUserNameDialog from "./EditUserNameDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 function UsersList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(false); // Control dialog visibility
+  const [userToRemoveId,setUserToRemoveId] = useState(null);
   const { keycloak } = useAuth();
   const navigate = useNavigate();
 
@@ -58,7 +72,41 @@ function UsersList() {
 
   }
   const handleDelete = (userId) =>{
-    console.log(`Deleting user with userId ${userId}`)
+    setIsDeleteUserDialogOpen(true);
+    setUserToRemoveId(userId);
+  }
+  const handleConfirmDeleteUser = () =>{
+    handleDeleteUser();
+  }
+  const handleCancelDeleteUser = () =>{
+    setIsDeleteUserDialogOpen(false);
+  }
+  const handleDeleteUser = async  () =>{
+    setLoading(true);
+    console.log(`Deleting user with userId ${userToRemoveId}`)
+    try{
+
+      //Make sure id of user to remove isn't null and token of the logged in admin is valid
+      if (!keycloak.token || userToRemoveId == null) {
+        throw new Error("Token or user to delete id invalid");
+      }
+
+      //perform API call to remove the user by its userId 
+      await ApiService.deleteUserByUserId(userToRemoveId, keycloak.token);
+
+      //Update the users state so that the removed user is excluded from it (filter)
+      const updatedUsers = users.filter(user => user.id !== userToRemoveId);
+      setUsers(updatedUsers);
+
+      setUserToRemoveId(null);
+      setIsDeleteUserDialogOpen(false);
+
+    }catch(err){
+      setError(err);
+      console.log(`Error occured while removing user ${err}`)
+    }finally{
+      setLoading(false)
+    }
   }
 
   if (loading) return <div>Loading users...</div>;
@@ -138,6 +186,33 @@ function UsersList() {
           onSave={handleSaveUsername}
         />
       )}
+
+            {/* Delete User dialog */}
+            <Dialog open={isDeleteUserDialogOpen} onOpenChange={setIsDeleteUserDialogOpen}>
+        <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] lg:max-w-[800px] h-[20vh] min-h-[200px]">
+          <DialogHeader>
+            <DialogTitle>Delete User</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this user? This action cannot
+              be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              className="bg-red-600 text-white rounded-xl px-4 py-2 hover:bg-red-700"
+              onClick={handleConfirmDeleteUser} // Handle deletion on confirm
+            >
+              Confirm
+            </Button>
+            <Button
+              className="bg-neutral-800 text-white rounded-xl px-4 py-2 hover:bg-gray-700"
+              onClick={handleCancelDeleteUser} // Handle cancellation
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
