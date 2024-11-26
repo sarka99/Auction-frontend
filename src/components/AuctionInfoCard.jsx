@@ -9,9 +9,27 @@ const AuctionCard = ({ auction }) => {
   const handleOnViewAuctionClicked = () => {
     navigate(`/auction-details/${auction.id}`);
   };
-
+  // Format the endDateTime to show only year, month, day, hour, and minute
+  const formatExpiryDate = (endDateTime) => {
+    const date = new Date(endDateTime);
+    // Use toLocaleDateString and toLocaleTimeString to show just the needed parts
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",  // "short" will give us abbreviated month (e.g., "Dec")
+      day: "numeric",
+    });
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${formattedDate} ${formattedTime}`;
+  };
   return (
+    
     <div className="flex-shrink-0 bg-white rounded-xl shadow-lg p-8 w-80 h-80 flex flex-col justify-between transition transform duration-200 hover:scale-105 hover:shadow-2xl">
+      <div onClick={handleOnViewAuctionClicked}>
+
+      </div>
       <div>
         <h2 className="text-xl font-semibold text-gray-900">{auction.name}</h2>
         <p className="text-gray-700 mt-2 line-clamp-3">{auction.description}</p>
@@ -19,7 +37,7 @@ const AuctionCard = ({ auction }) => {
           <p className="font-medium">
             Starting Price: <span className="text-blue-600">${auction.startingPrice}</span>
           </p>
-          <p>Expires: {new Date(auction.endDateTime).toLocaleString()}</p>
+          <p>Expires: {formatExpiryDate(auction.endDateTime)}</p>  {/* Format the date */}
         </div>
       </div>
       <Button

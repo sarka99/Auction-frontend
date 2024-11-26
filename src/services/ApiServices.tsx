@@ -130,14 +130,16 @@ const ApiService = {
         }
         return response.json();
     },
-    createAuction: async (auctionDetails, userToken) => {
+    createAuction: async (formData, userToken) => {
         const response = await fetch(`${API_BASE_URL}/auctions/create`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${userToken}`, // Assuming JWT token is required
-                'Content-Type': 'application/json',
+
+
+                
             },
-            body: JSON.stringify(auctionDetails), // Send auction details to the backend
+            body: formData, // Send formData which includes both auction and image
         });
     
         if (!response.ok) {

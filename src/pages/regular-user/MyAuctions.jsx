@@ -145,6 +145,21 @@ function MyAuctions() {
     setIsDeleteDialogOpen(false);
     setEditingAuctionId(false);
   };
+    // Format the endDateTime to show only year, month, day, hour, and minute
+    const formatExpiryDate = (endDateTime) => {
+      const date = new Date(endDateTime);
+      // Use toLocaleDateString and toLocaleTimeString to show just the needed parts
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",  // "short" will give us abbreviated month (e.g., "Dec")
+        day: "numeric",
+      });
+      const formattedTime = date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      return `${formattedDate} ${formattedTime}`;
+    };
   if (loading) return <div>Loading auctions...</div>;
   if (error) return <div>Error fetching auctions: {error}</div>;
 
@@ -173,8 +188,8 @@ function MyAuctions() {
               </h2>
               <p>Description: {auction.description}</p>
               <p>Starting price: {auction.startingPrice}</p>
-              <p>Expires: {new Date(auction.endDateTime).toLocaleString()}</p>
-            </div>
+              <p>Expires: {formatExpiryDate(auction.endDateTime)}</p>  {/* Format the date */}
+              </div>
             <div className="flex space-x-2">
               <Button
                 className="text-gray-600  hover:text-gray-900 hover:scale-125 focus:outline-none transition duration-200"

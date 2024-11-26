@@ -66,7 +66,9 @@ function AuctionDetails() {
   };
 
   const handleOnPlaceBid = async () => {
-    console.log(`Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`);
+    console.log(
+      `Trying to place the bid of amount ${bidValue} on auctionId ${auctionId}`
+    );
 
     const highestBid = returnHighestBid();
     const loggedInUserId = keycloak.tokenParsed?.sub;
@@ -116,7 +118,11 @@ function AuctionDetails() {
       setLoading(true); // Start loading
 
       // Make the place bid API request and wait for the response
-      const newBid = await ApiService.placeBidOnAuction(auctionId, keycloak.token, bidValue);
+      const newBid = await ApiService.placeBidOnAuction(
+        auctionId,
+        keycloak.token,
+        bidValue
+      );
 
       console.log("API Response (New Bid):", newBid); // Log the response to check the data
 
@@ -129,36 +135,20 @@ function AuctionDetails() {
       setLoading(false); // Stop loading
     }
   };
-  const renderPlaceBidSection = () => {
-    const loggedInUserId = keycloak.tokenParsed?.sub;
-    if(auction.userId !== loggedInUserId){
-      return (
-        <div className="flex justify-end mr-3 py-11 space-x-4">
-        <Input
-          className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
-          placeholder="Enter your bid amount"
-          type="number"
-          min="1"
-          value={bidValue}
-          onChange={(event) => handleOnBidChanged(event)}
-          style={{
-            borderRadius: "8px",
-            WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
-            MozAppearance: "textfield", // Hide spinners in Firefox
-          }}
-        />
-        <Button
-          className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
-          onClick={handleOnPlaceBid}
-        >
-          Place Bid
-        </Button>
-      </div>
-      )
-    }else{
-        return null;
-    }
-  }
+  const formatExpiryDate = (endDateTime) => {
+    const date = new Date(endDateTime);
+    // Use toLocaleDateString and toLocaleTimeString to show just the needed parts
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short", // "short" will give us abbreviated month (e.g., "Dec")
+      day: "numeric",
+    });
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${formattedDate} ${formattedTime}`;
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -167,7 +157,9 @@ function AuctionDetails() {
         <CardHeader className="mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="text-3xl font-bold text-gray-800">{auction?.name}</CardTitle>
+              <CardTitle className="text-3xl font-bold text-gray-800">
+                {auction?.name}
+              </CardTitle>
               <CardDescription className="text-gray-600 mt-3 text-base">
                 {auction?.description}
               </CardDescription>
@@ -199,7 +191,9 @@ function AuctionDetails() {
           {/* End time */}
           <div className="space-y-2 text-left">
             <h3 className="text-xl font-medium">Ends At</h3>
-            <p className="text-lg font-bold">{new Date(auction?.endDateTime).toLocaleString()}</p>
+            <p className="text-lg font-bold">
+              {formatExpiryDate(auction?.endDateTime)}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -210,57 +204,70 @@ function AuctionDetails() {
         <Table className="w-full table-auto border-collapse border border-gray-300 rounded-lg shadow-md">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Bidder</th>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Amount</th>
-              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">Time</th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">
+                Bidder
+              </th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">
+                Amount
+              </th>
+              <th className="border px-6 py-4 text-left text-sm font-medium text-gray-700">
+                Time
+              </th>
             </tr>
           </thead>
           <tbody>
             {auctionBids.length > 0 ? (
               auctionBids.map((bid) => (
-                <tr key={bid.id} className="border-t hover:bg-gray-50 transition-all duration-200 ease-in-out">
-                  <td className="border px-6 py-4 text-sm">{bid.bidderEmail}</td>
+                <tr
+                  key={bid.id}
+                  className="border-t hover:bg-gray-50 transition-all duration-200 ease-in-out"
+                >
+                  <td className="border px-6 py-4 text-sm">
+                    {bid.bidderEmail}
+                  </td>
                   <td className="border px-6 py-4 text-sm">${bid.amount}</td>
-                  <td className="border px-6 py-4 text-sm">{new Date(bid.time).toLocaleString()}</td>
+                  <td className="border px-6 py-4 text-sm">
+                    {new Date(bid.time).toLocaleString()}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="text-center border px-6 py-4 text-sm">
+                <td
+                  colSpan="3"
+                  className="text-center border px-6 py-4 text-sm"
+                >
                   No bids placed yet.
                 </td>
               </tr>
             )}
           </tbody>
         </Table>
-        
 
         {/* Bid Placement Section */}
         {auction && auction.userId !== keycloak.tokenParsed?.sub && (
-        <div className="flex justify-end mr-3 py-11 space-x-4">
-        <Input
-          className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
-          placeholder="Enter your bid amount"
-          type="number"
-          min="1"
-          value={bidValue}
-          onChange={(event) => handleOnBidChanged(event)}
-          style={{
-            borderRadius: "8px",
-            WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
-            MozAppearance: "textfield", // Hide spinners in Firefox
-          }}
-        />
-        <Button
-          className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
-          onClick={handleOnPlaceBid}
-        >
-          Place Bid
-        </Button>
-      </div>
-      )}
-
-        
+          <div className="flex justify-end mr-3 py-11 space-x-4">
+            <Input
+              className="bg-gray-200 font-semibold px-4 py-7 w-full shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
+              placeholder="Enter your bid amount"
+              type="number"
+              min="1"
+              value={bidValue}
+              onChange={(event) => handleOnBidChanged(event)}
+              style={{
+                borderRadius: "8px",
+                WebkitAppearance: "none", // Hide spinners in Webkit-based browsers (Chrome, Safari)
+                MozAppearance: "textfield", // Hide spinners in Firefox
+              }}
+            />
+            <Button
+              className="bg-blue-600 text-white px-6 py-7 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out active:scale-95"
+              onClick={handleOnPlaceBid}
+            >
+              Place Bid
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

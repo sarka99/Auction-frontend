@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom'; // For navigation
 import ApiService from '../services/ApiServices';
 import { useAuth } from '../hooks/useAuth';
 
+
+
+
+
 function CreateAuction() {
   const navigate = useNavigate();
   const { keycloak } = useAuth();
@@ -12,6 +16,7 @@ function CreateAuction() {
     startingPrice: '',
     endDateTime: '',
   });
+  const [imageFile, setImageFile] = useState(null);  // State for the selected image
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,15 +27,30 @@ function CreateAuction() {
     console.log(`keycloak token: ${keycloak.token}`);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);  // Store the selected image file in state
+  }
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
+
+    // Create FormData instance and append auction details and the selected image file
+    const formData = new FormData();
+    //append auction details
+    formData.append("auction", JSON.stringify(auctionDetails));
+    //append image file if it's selected
+    if(imageFile){
+      formData.append("image", imageFile);
+    }
 
     try {
       setLoading(true);
       setError(null);
-
+      for (let pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`); // Logs key and value
+      }
       // Send the auction details to the backend to create the auction
-      const newAuction = await ApiService.createAuction(auctionDetails, keycloak.token);
+      const newAuction = await ApiService.createAuction(formData, keycloak.token);
 
       // If the auction was successfully created, navigate to "My Auctions" page
       if (newAuction) {
@@ -119,6 +139,20 @@ function CreateAuction() {
               onChange={handleInputChange}
               required
               
+              className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+            {/* Image Upload */}
+            <div>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700">Auction Image</label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              required
               className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
